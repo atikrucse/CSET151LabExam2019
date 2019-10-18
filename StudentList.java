@@ -66,25 +66,8 @@ namespace dev275x.studentlist
             }
             else if (args[0].Contains(Constants.ShowCount))
             {
-                var characters = fileContents.ToCharArray();
-                var in_word = false;
-                var count = 0;
-                foreach(var c in characters)
-                {
-                    if (c > ' ' && c < 0177)
-                    {
-                        if (!in_word) 
-                        {
-                            count = count + 1;
-                            in_word = true;
-                        }
-                    }
-                    else 
-                    {
-                        in_word = false;
-                    }
-                }
-                Console.WriteLine(String.Format("{0} words found", count));
+                var words = fileContents.Split(Constants.StudentEntryDelimiter);
+                Console.WriteLine(String.Format("{0} words found", words.Length));
             }
         }
 
