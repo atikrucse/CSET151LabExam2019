@@ -8,10 +8,10 @@ namespace dev275x.studentlist
         // The Main method 
         static void Main(string[] args)
         {
-            /* Check arguments */
+            /* Check argument count */
             if (args == null || args.Length != 1)
             {
-                Console.WriteLine("Usage: dotnet dev275x.rollcall.dll (-a | -r | -c | +WORD | ?WORD)");
+                ShowUsage();
                 return; // Exit early.
             }
 
@@ -69,6 +69,12 @@ namespace dev275x.studentlist
                 var words = fileContents.Split(Constants.StudentEntryDelimiter);
                 Console.WriteLine(String.Format("{0} words found", words.Length));
             }
+            else
+            {
+                // Arguments were supplied, but they are invalid. We'll handle
+                // this case gracefully by listing valid arguments to the user.
+                ShowUsage();
+            }
         }
 
         // Reads data from the given file. 
@@ -102,6 +108,11 @@ namespace dev275x.studentlist
                 writer.WriteLine(content);
                 writer.WriteLine(timestamp);
             }
+        }
+
+        static void ShowUsage()
+        {
+            Console.WriteLine("Usage: dotnet dev275x.rollcall.dll (-a | -r | -c | +WORD | ?WORD)");
         }
     }
 }
