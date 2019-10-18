@@ -80,8 +80,6 @@ namespace dev275x.studentlist
         // Reads data from the given file. 
         static string LoadData(string fileName)
         {
-            string line;
-
             // The 'using' construct does the heavy lifting of flushing a stream
             // and releasing system resources the stream was using.
             using (var fileStream = new FileStream(fileName,FileMode.Open))
@@ -92,18 +90,15 @@ namespace dev275x.studentlist
                 // The first line is a comma-separated list of student names. 
                 // The second line is a timestamp. 
                 // Let's just retrieve the first line, which is the student names. 
-                line = reader.ReadLine();
+                return reader.ReadLine();
             }
-            
-            return line;
         }
 
         // Writes the given string of data to the file with the given file name.
         //This method also adds a timestamp to the end of the file. 
         static void UpdateContent(string content, string fileName)
         {
-            var now = DateTime.Now;
-            var timestamp = String.Format("List last updated on {0}", now);
+            var timestamp = String.Format("List last updated on {0}", DateTime.Now);
 
             // The 'using' construct does the heavy lifting of flushing a stream
             // and releasing system resources the stream was using.
