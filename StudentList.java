@@ -15,58 +15,34 @@ namespace dev275x.studentlist
                 return; // Exit early.
             }
 
+            // Every operation requires us to load the student list.
+            var fileContents = LoadData("students.txt");
+
             if (args[0] == "a") 
             {
-                Console.WriteLine("Loading data ...");
-                var fileStream = new FileStream("students.txt",FileMode.Open);
-                var reader = new StreamReader(fileStream);
-                var fileContents = reader.ReadToEnd(); 
                 var words = fileContents.Split(',');
                 foreach(var word in words) 
                 {
                     Console.WriteLine(word);
                 }
-                Console.WriteLine("Data loaded");
             }
             else if (args[0]== "r")
             {
-                Console.WriteLine("Loading data ...");
-
-                // We are loading data
-                var fileStream = new FileStream("students.txt",FileMode.Open);
-                var reader = new StreamReader(fileStream);
-                var fileContents = reader.ReadToEnd();
                 var words = fileContents.Split(',');
                 var rand = new Random();
                 var randomIndex = rand.Next(0,words.Length);
                 Console.WriteLine(words[randomIndex]);
-                Console.WriteLine("Data loaded");
             }
             else if (args[0].Contains("+"))
             {
-                // read
-                Console.WriteLine("Loading data ...");
-                var fileStream = new FileStream("students.txt",FileMode.Open);
-                var writer = new StreamWriter(fileStream);
                 var argValue = args[0].Substring(1);
-                var reader = new StreamReader(fileStream);
-                var fileContents = reader.ReadToEnd();
-                fileStream.Seek(0,SeekOrigin.Begin);
 
                 // Write
                 // But we're in trouble if there are ever duplicates entered
-                writer.WriteLine(fileContents.Replace('\n',' ') + "," + argValue);
-                var now = DateTime.Now;
-                writer.WriteLine(String.Format("List last updated on {0}", now));
-                writer.Flush();
-                Console.WriteLine("Data loaded");
+                UpdateContent(fileContents + "," + argValue, "students.txt");
             }
             else if (args[0].Contains("?"))
             {
-                Console.WriteLine("Loading data ...");
-                var fileStream = new FileStream("students.txt",FileMode.Open);
-                var reader = new StreamReader(fileStream);
-                var fileContents = reader.ReadToEnd(); 
                 var words = fileContents.Split(',');
                 bool done = false;
                 var argValue = args[0].Substring(1);
@@ -79,10 +55,6 @@ namespace dev275x.studentlist
             }
             else if (args[0].Contains("c"))
             {
-                Console.WriteLine("Loading data ...");
-                var fileStream = new FileStream("students.txt",FileMode.Open);
-                var reader = new StreamReader(fileStream);
-                var fileContents = reader.ReadToEnd();
                 var characters = fileContents.ToCharArray();
                 var in_word = false;
                 var count = 0;
@@ -103,7 +75,44 @@ namespace dev275x.studentlist
                 }
                 Console.WriteLine(String.Format("{0} words found", count));
             }
+        }
+
+        // Reads data from the given file. 
+        static string LoadData(string fileName)
+        {
+            string line;
+
+            // The 'using' construct does the heavy lifting of flushing a stream
+            // and releasing system resources the stream was using.
+            using (var fileStream = new FileStream(fileName,FileMode.Open))
+            using (var reader = new StreamReader(fileStream))
+            {
+
+                // The format of our student list is that it is two lines.
+                // The first line is a comma-separated list of student names. 
+                // The second line is a timestamp. 
+                // Let's just retrieve the first line, which is the student names. 
+                line = reader.ReadLine();
+            }
             
+            return line;
+        }
+
+        // Writes the given string of data to the file with the given file name.
+        //This method also adds a timestamp to the end of the file. 
+        static void UpdateContent(string content, string fileName)
+        {
+            var now = DateTime.Now;
+            var timestamp = String.Format("List last updated on {0}", now);
+
+            // The 'using' construct does the heavy lifting of flushing a stream
+            // and releasing system resources the stream was using.
+            using (var fileStream = new FileStream(fileName,FileMode.Open))
+            using (var writer = new StreamWriter(fileStream))
+            {
+                writer.WriteLine(content);
+                writer.WriteLine(timestamp);
+            }
         }
     }
 }
