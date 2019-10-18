@@ -44,13 +44,24 @@ namespace dev275x.studentlist
             else if (args[0].Contains(Constants.FindEntry))
             {
                 var words = fileContents.Split(Constants.StudentEntryDelimiter);
-                bool done = false;
                 var argValue = args[0].Substring(1);
-                for (int idx = 0; idx < words.Length && !done; idx++)
+                var indexLocation = -1;
+                for (int idx = 0; idx < words.Length; idx++)
                 {
-                    if (words[idx] == argValue)
-                        Console.WriteLine("We found it!");
-                        done = true;
+                    if (words[idx].Trim() == argValue)
+                    {
+                        indexLocation = idx;
+                        break;
+                    }
+                }
+
+                if (indexLocation >= 0)
+                {
+                    Console.WriteLine($"Entry '{argValue}' found at index {indexLocation}");
+                }
+                else
+                {
+                    Console.WriteLine($"Entry '{argValue}' does not exist");
                 }
             }
             else if (args[0].Contains(Constants.ShowCount))
