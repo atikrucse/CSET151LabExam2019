@@ -11,39 +11,39 @@ namespace dev275x.studentlist
             /* Check arguments */
             if (args == null || args.Length != 1)
             {
-                Console.WriteLine("Usage: dotnet dev275x.rollcall.dll (a | r | c | +WORD | ?WORD)");
+                Console.WriteLine("Usage: dotnet dev275x.rollcall.dll (-a | -r | -c | +WORD | ?WORD)");
                 return; // Exit early.
             }
 
             // Every operation requires us to load the student list.
-            var fileContents = LoadData("students.txt");
+            var fileContents = LoadData(Constants.StudentList);
 
-            if (args[0] == "a") 
+            if (args[0] == Constants.ShowAll) 
             {
-                var words = fileContents.Split(',');
+                var words = fileContents.Split(Constants.StudentEntryDelimiter);
                 foreach(var word in words) 
                 {
                     Console.WriteLine(word);
                 }
             }
-            else if (args[0]== "r")
+            else if (args[0]== Constants.ShowRandom)
             {
-                var words = fileContents.Split(',');
+                var words = fileContents.Split(Constants.StudentEntryDelimiter);
                 var rand = new Random();
                 var randomIndex = rand.Next(0,words.Length);
                 Console.WriteLine(words[randomIndex]);
             }
-            else if (args[0].Contains("+"))
+            else if (args[0].Contains(Constants.AddEntry))
             {
                 var argValue = args[0].Substring(1);
 
                 // Write
                 // But we're in trouble if there are ever duplicates entered
-                UpdateContent(fileContents + "," + argValue, "students.txt");
+                UpdateContent(fileContents + Constants.StudentEntryDelimiter + argValue, Constants.StudentList);
             }
-            else if (args[0].Contains("?"))
+            else if (args[0].Contains(Constants.FindEntry))
             {
-                var words = fileContents.Split(',');
+                var words = fileContents.Split(Constants.StudentEntryDelimiter);
                 bool done = false;
                 var argValue = args[0].Substring(1);
                 for (int idx = 0; idx < words.Length && !done; idx++)
@@ -53,7 +53,7 @@ namespace dev275x.studentlist
                         done = true;
                 }
             }
-            else if (args[0].Contains("c"))
+            else if (args[0].Contains(Constants.ShowCount))
             {
                 var characters = fileContents.ToCharArray();
                 var in_word = false;
